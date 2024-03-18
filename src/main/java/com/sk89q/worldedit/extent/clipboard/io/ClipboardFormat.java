@@ -85,7 +85,8 @@ public enum ClipboardFormat {
             }
         }
     },
-    SCHEMATICPLUS("schematicplus"){
+    SCHEMATICPLUS("schematicplus") {
+
         @Override
         public ClipboardReader getReader(InputStream inputStream) throws IOException {
             NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(inputStream));

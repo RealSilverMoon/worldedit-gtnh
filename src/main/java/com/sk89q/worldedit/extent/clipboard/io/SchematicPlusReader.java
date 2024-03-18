@@ -1,5 +1,17 @@
 package com.sk89q.worldedit.extent.clipboard.io;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.annotation.Nullable;
+
 import com.sk89q.jnbt.*;
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.Vector;
@@ -15,18 +27,8 @@ import com.sk89q.worldedit.world.registry.BundledBlockData;
 import com.sk89q.worldedit.world.registry.WorldData;
 import com.sk89q.worldedit.world.storage.NBTConversions;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+public class SchematicPlusReader implements ClipboardReader {
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-public class SchematicPlusReader implements ClipboardReader  {
     private static final Logger log = Logger.getLogger(SchematicPlusReader.class.getCanonicalName());
     private final NBTInputStream inputStream;
 
@@ -45,7 +47,7 @@ public class SchematicPlusReader implements ClipboardReader  {
         // SchematicPlus tag
         NamedTag rootTag = inputStream.readNamedTag();
         if (!rootTag.getName()
-                .equals("SchematicPlus")) {
+            .equals("SchematicPlus")) {
             throw new IOException("Tag 'SchematicPlus' does not exist or is not first");
         }
         CompoundTag schematicPlusTag = (CompoundTag) rootTag.getTag();
@@ -87,15 +89,15 @@ public class SchematicPlusReader implements ClipboardReader  {
 
             origin = min.subtract(offset);
             region = new CuboidRegion(
-                    min,
-                    min.add(width, height, length)
-                            .subtract(Vector.ONE));
+                min,
+                min.add(width, height, length)
+                    .subtract(Vector.ONE));
         } catch (IOException ignored) {
             origin = new Vector(0, 0, 0);
             region = new CuboidRegion(
-                    origin,
-                    origin.add(width, height, length)
-                            .subtract(Vector.ONE));
+                origin,
+                origin.add(width, height, length)
+                    .subtract(Vector.ONE));
         }
 
         // ====================================================================
@@ -105,14 +107,14 @@ public class SchematicPlusReader implements ClipboardReader  {
         // Get blocks
         List<Tag> blocks = requireTag(schematicPlus, "Blocks", ListTag.class).getValue();
         Map<BlockVector, Map<String, Tag>> blockMap = new HashMap<>();
-        for(Tag tag: blocks){
+        for (Tag tag : blocks) {
             if (!(tag instanceof CompoundTag b)) continue;
             int x = 0;
             int y = 0;
             int z = 0;
             Map<String, Tag> values = new HashMap<>();
             for (Map.Entry<String, Tag> entry : b.getValue()
-                    .entrySet()) {
+                .entrySet()) {
                 switch (entry.getKey()) {
                     case "x":
                         if (entry.getValue() instanceof IntTag) {
@@ -150,7 +152,7 @@ public class SchematicPlusReader implements ClipboardReader  {
             Map<String, Tag> values = new HashMap<>();
 
             for (Map.Entry<String, Tag> entry : t.getValue()
-                    .entrySet()) {
+                .entrySet()) {
                 switch (entry.getKey()) {
                     case "x":
                         if (entry.getValue() instanceof IntTag) {
@@ -186,28 +188,35 @@ public class SchematicPlusReader implements ClipboardReader  {
             for (int y = 0; y < height; ++y) {
                 for (int z = 0; z < length; ++z) {
                     BlockVector pt = new BlockVector(x, y, z);
-                    String id= (String) blockMap.get(pt).get("id").getValue();
-                    int damage=(int) blockMap.get(pt).get("damage").getValue();
-                    BaseBlock block= new BaseBlock(Optional.ofNullable(BundledBlockData.getInstance().toLegacyId(id)).orElse(0)
-                            ,damage);
+                    String id = (String) blockMap.get(pt)
+                        .get("id")
+                        .getValue();
+                    int damage = (int) blockMap.get(pt)
+                        .get("damage")
+                        .getValue();
+                    BaseBlock block = new BaseBlock(
+                        Optional.ofNullable(
+                            BundledBlockData.getInstance()
+                                .toLegacyId(id))
+                            .orElse(0),
+                        damage);
                     if (tileEntitiesMap.containsKey(pt)) {
                         block.setNbtData(new CompoundTag(tileEntitiesMap.get(pt)));
                     }
 
                     try {
                         clipboard.setBlock(
-                                region.getMinimumPoint()
-                                        .add(pt),
-                                block);
+                            region.getMinimumPoint()
+                                .add(pt),
+                            block);
                     } catch (WorldEditException e) {
                         switch (failedBlockSets) {
                             case 0 -> log.log(Level.WARNING, "Failed to set block on a Clipboard", e);
                             case 1 -> log.log(
-                                    Level.WARNING,
-                                    "Failed to set block on a Clipboard (again) -- no more messages will be logged",
-                                    e);
-                            default -> {
-                            }
+                                Level.WARNING,
+                                "Failed to set block on a Clipboard (again) -- no more messages will be logged",
+                                e);
+                            default -> {}
                         }
 
                         failedBlockSets++;
@@ -227,7 +236,7 @@ public class SchematicPlusReader implements ClipboardReader  {
                 if (tag instanceof CompoundTag compound) {
                     String id = compound.getString("id");
                     Location location = NBTConversions
-                            .toLocation(clipboard, compound.getListTag("Pos"), compound.getListTag("Rotation"));
+                        .toLocation(clipboard, compound.getListTag("Pos"), compound.getListTag("Rotation"));
 
                     if (!id.isEmpty()) {
                         BaseEntity state = new BaseEntity(id, compound);
@@ -242,7 +251,7 @@ public class SchematicPlusReader implements ClipboardReader  {
     }
 
     private static <T extends Tag> T requireTag(Map<String, Tag> items, String key, Class<T> expected)
-            throws IOException {
+        throws IOException {
         if (!items.containsKey(key)) {
             throw new IOException("Schematic file is missing a \"" + key + "\" tag");
         }
@@ -272,4 +281,3 @@ public class SchematicPlusReader implements ClipboardReader  {
     }
 
 }
-

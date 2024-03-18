@@ -1,5 +1,10 @@
 package com.sk89q.worldedit.extent.clipboard.io;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.io.IOException;
+import java.util.*;
+
 import com.sk89q.jnbt.*;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
@@ -11,12 +16,8 @@ import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldedit.world.registry.BundledBlockData;
 import com.sk89q.worldedit.world.registry.WorldData;
 
-import java.io.IOException;
-import java.util.*;
+public class SchematicPlusWriter implements ClipboardWriter {
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-public class SchematicPlusWriter implements ClipboardWriter{
     private final NBTOutputStream outputStream;
 
     /**
@@ -71,9 +72,15 @@ public class SchematicPlusWriter implements ClipboardWriter{
             BaseBlock block = clipboard.getBlock(point);
 
             Map<String, Tag> blockValues = new HashMap<>();
-            blockValues.put("id",new StringTag(Optional.ofNullable(BundledBlockData.getInstance().findById(block.getId())).map(var->var.id)
-                    .orElse("minecraft:air")));
-            blockValues.put("damage",new IntTag(block.getData()));
+            blockValues.put(
+                "id",
+                new StringTag(
+                    Optional.ofNullable(
+                        BundledBlockData.getInstance()
+                            .findById(block.getId()))
+                        .map(var -> var.id)
+                        .orElse("minecraft:air")));
+            blockValues.put("damage", new IntTag(block.getData()));
             blockValues.put("x", new IntTag(x));
             blockValues.put("y", new IntTag(y));
             blockValues.put("z", new IntTag(z));
@@ -84,7 +91,7 @@ public class SchematicPlusWriter implements ClipboardWriter{
             if (rawTag != null) {
                 Map<String, Tag> values = new HashMap<String, Tag>();
                 for (Map.Entry<String, Tag> entry : rawTag.getValue()
-                        .entrySet()) {
+                    .entrySet()) {
                     values.put(entry.getKey(), entry.getValue());
                 }
 
@@ -98,7 +105,7 @@ public class SchematicPlusWriter implements ClipboardWriter{
             }
         }
 
-        schematicPlus.put("Blocks", new ListTag(CompoundTag.class,blocks));
+        schematicPlus.put("Blocks", new ListTag(CompoundTag.class, blocks));
         schematicPlus.put("TileEntities", new ListTag(CompoundTag.class, tileEntities));
 
         // ====================================================================
@@ -121,11 +128,10 @@ public class SchematicPlusWriter implements ClipboardWriter{
                 // Store our location data, overwriting any
                 values.put("id", new StringTag(state.getTypeId()));
                 values.put(
-                        "Pos",
-                        writeVector(
-                                entity.getLocation()
-                                        .toVector()
-                        ));
+                    "Pos",
+                    writeVector(
+                        entity.getLocation()
+                            .toVector()));
                 values.put("Rotation", writeRotation(entity.getLocation()));
 
                 CompoundTag entityTag = new CompoundTag(values);
