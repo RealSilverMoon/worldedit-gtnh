@@ -111,7 +111,7 @@ public class BundledBlockData {
      * @return the entry, or null
      */
     @Nullable
-    private BlockEntry findById(int id) {
+    public BlockEntry findById(int id) {
         return legacyMap.get(id);
     }
 
@@ -172,14 +172,14 @@ public class BundledBlockData {
         return INSTANCE;
     }
 
-    private static class BlockEntry {
+    public static class BlockEntry {
 
         private int legacyId;
-        private String id;
-        private String unlocalizedName;
-        private List<String> aliases;
-        private Map<String, SimpleState> states = new HashMap<String, SimpleState>();
-        private SimpleBlockMaterial material = new SimpleBlockMaterial();
+        public String id;
+        public String unlocalizedName;
+        public List<String> aliases;
+        public Map<String, SimpleState> states = new HashMap<String, SimpleState>();
+        public SimpleBlockMaterial material = new SimpleBlockMaterial();
 
         void postDeserialization() {
             for (SimpleState state : states.values()) {

@@ -84,6 +84,42 @@ public enum ClipboardFormat {
                 }
             }
         }
+    },
+    SCHEMATICPLUS("schematicplus"){
+        @Override
+        public ClipboardReader getReader(InputStream inputStream) throws IOException {
+            NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(inputStream));
+            return new SchematicPlusReader(nbtStream);
+        }
+
+        @Override
+        public ClipboardWriter getWriter(OutputStream outputStream) throws IOException {
+            NBTOutputStream nbtStream = new NBTOutputStream(new GZIPOutputStream(outputStream));
+            return new SchematicPlusWriter(nbtStream);
+        }
+
+        @Override
+        public boolean isFormat(File file) {
+            DataInputStream str = null;
+            try {
+                str = new DataInputStream(new GZIPInputStream(new FileInputStream(file)));
+                if ((str.readByte() & 0xFF) != NBTConstants.TYPE_COMPOUND) {
+                    return false;
+                }
+                byte[] nameBytes = new byte[str.readShort() & 0xFFFF];
+                str.readFully(nameBytes);
+                String name = new String(nameBytes, NBTConstants.CHARSET);
+                return name.equals("SchematicPlus");
+            } catch (IOException e) {
+                return false;
+            } finally {
+                if (str != null) {
+                    try {
+                        str.close();
+                    } catch (IOException ignored) {}
+                }
+            }
+        }
     };
 
     private static final Map<String, ClipboardFormat> aliasMap = new HashMap<String, ClipboardFormat>();

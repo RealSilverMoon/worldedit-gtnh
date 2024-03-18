@@ -27,6 +27,7 @@ import com.sk89q.worldedit.CuboidClipboard.FlipDirection;
 import com.sk89q.worldedit.foundation.Block;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.world.registry.WorldData;
+import net.minecraft.item.Item;
 
 /**
  * Represents a mutable "snapshot" of a block.
@@ -409,5 +410,4 @@ public class BaseBlock extends Block implements TileEntityBlock {
     public String toString() {
         return "Block{ID:" + getId() + ", Data: " + getData() + "}";
     }
-
 }
