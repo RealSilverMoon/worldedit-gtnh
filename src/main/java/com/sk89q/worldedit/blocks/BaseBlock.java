@@ -17,16 +17,23 @@
 package com.sk89q.worldedit.blocks;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
 import com.sk89q.jnbt.CompoundTag;
+import com.sk89q.jnbt.IntTag;
 import com.sk89q.jnbt.StringTag;
 import com.sk89q.jnbt.Tag;
 import com.sk89q.worldedit.CuboidClipboard.FlipDirection;
+import com.sk89q.worldedit.forge.NBTConverter;
+import com.sk89q.worldedit.forge.TileEntityBaseBlock;
 import com.sk89q.worldedit.foundation.Block;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.world.registry.WorldData;
+import gregtech.api.GregTech_API;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Represents a mutable "snapshot" of a block.
@@ -183,8 +190,12 @@ public class BaseBlock extends Block implements TileEntityBlock {
      */
     protected final void internalSetData(int data) {
         if (data > MAX_DATA) {
-            throw new IllegalArgumentException(
-                "Can't have a block data value above " + MAX_DATA + " (" + data + " given)");
+            this.data=0;
+            NBTTagCompound nbt=new NBTTagCompound();
+            GregTech_API.createTileEntity(0).writeToNBT(nbt);
+            nbt.setInteger("mID",data);
+            setNbtData(NBTConverter.fromNative(nbt));
+            return;
         }
 
         if (data < -1) {
@@ -242,7 +253,7 @@ public class BaseBlock extends Block implements TileEntityBlock {
         }
         Tag idTag = nbtData.getValue()
             .get("id");
-        if (idTag != null && idTag instanceof StringTag) {
+        if (idTag instanceof StringTag) {
             return ((StringTag) idTag).getValue();
         } else {
             return "";
@@ -357,11 +368,9 @@ public class BaseBlock extends Block implements TileEntityBlock {
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof BaseBlock)) {
+        if (!(o instanceof final BaseBlock otherBlock)) {
             return false;
         }
-
-        final BaseBlock otherBlock = (BaseBlock) o;
 
         return getType() == otherBlock.getType() && getData() == otherBlock.getData();
 

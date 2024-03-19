@@ -26,7 +26,7 @@ import com.sk89q.jnbt.*;
 /**
  * Converts between JNBT and Minecraft NBT classes.
  */
-final class NBTConverter {
+public final class NBTConverter {
 
     private NBTConverter() {}
 

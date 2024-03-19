@@ -61,14 +61,10 @@ class DefaultBlockParser extends InputParser<BaseBlock> {
         input = input.replace(";", "|");
         String[] blockAndExtraData = input.split("\\|");
         String[] blockLocator = blockAndExtraData[0].split(":", 3);
-        String[] typeAndData;
-        switch (blockLocator.length) {
-            case 3:
-                typeAndData = new String[] { blockLocator[0] + ":" + blockLocator[1], blockLocator[2] };
-                break;
-            default:
-                typeAndData = blockLocator;
-        }
+        String[] typeAndData = switch (blockLocator.length) {
+            case 3 -> new String[]{blockLocator[0] + ":" + blockLocator[1], blockLocator[2]};
+            default -> blockLocator;
+        };
         String testId = typeAndData[0];
 
         int blockId = -1;
@@ -170,10 +166,6 @@ class DefaultBlockParser extends InputParser<BaseBlock> {
                     data = Integer.parseInt(typeAndData[1]);
                 }
 
-                if (data > 15) {
-                    throw new NoMatchException("Invalid data value '" + typeAndData[1] + "'");
-                }
-
                 if (data < 0 && (context.isRestricted() || data != -1)) {
                     data = 0;
                 }
@@ -183,58 +175,31 @@ class DefaultBlockParser extends InputParser<BaseBlock> {
                 }
 
                 switch (blockType) {
-                    case CLOTH:
-                    case STAINED_CLAY:
-                    case CARPET:
+                    case CLOTH, STAINED_CLAY, CARPET -> {
                         ClothColor col = ClothColor.lookup(typeAndData[1]);
                         if (col == null) {
                             throw new NoMatchException("Unknown wool color '" + typeAndData[1] + "'");
                         }
-
                         data = col.getID();
-                        break;
-
-                    case STEP:
-                    case DOUBLE_STEP:
+                    }
+                    case STEP, DOUBLE_STEP -> {
                         BlockType dataType = BlockType.lookup(typeAndData[1]);
-
                         if (dataType == null) {
                             throw new NoMatchException("Unknown step type '" + typeAndData[1] + "'");
                         }
-
-                        switch (dataType) {
-                            case STONE:
-                                data = 0;
-                                break;
-                            case SANDSTONE:
-                                data = 1;
-                                break;
-                            case WOOD:
-                                data = 2;
-                                break;
-                            case COBBLESTONE:
-                                data = 3;
-                                break;
-                            case BRICK:
-                                data = 4;
-                                break;
-                            case STONE_BRICK:
-                                data = 5;
-                                break;
-                            case NETHER_BRICK:
-                                data = 6;
-                                break;
-                            case QUARTZ_BLOCK:
-                                data = 7;
-                                break;
-
-                            default:
-                                throw new NoMatchException("Invalid step type '" + typeAndData[1] + "'");
-                        }
-                        break;
-
-                    default:
-                        throw new NoMatchException("Unknown data value '" + typeAndData[1] + "'");
+                        data = switch (dataType) {
+                            case STONE -> 0;
+                            case SANDSTONE -> 1;
+                            case WOOD -> 2;
+                            case COBBLESTONE -> 3;
+                            case BRICK -> 4;
+                            case STONE_BRICK -> 5;
+                            case NETHER_BRICK -> 6;
+                            case QUARTZ_BLOCK -> 7;
+                            default -> throw new NoMatchException("Invalid step type '" + typeAndData[1] + "'");
+                        };
+                    }
+                    default -> throw new NoMatchException("Unknown data value '" + typeAndData[1] + "'");
                 }
             }
         }
