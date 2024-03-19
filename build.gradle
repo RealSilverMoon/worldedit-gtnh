@@ -45,6 +45,10 @@ buildscript {
             url 'https://oss.sonatype.org/content/repositories/snapshots/'
         }
         maven {
+            name 'ic2'
+            url 'https://maven2.ic2.player.to'
+        }
+        maven {
             name 'Scala CI dependencies'
             url 'https://repo1.maven.org/maven2/'
         }
