@@ -77,7 +77,7 @@ public class SchematicPlusWriter implements ClipboardWriter {
                 "id",
                 new StringTag(
                     Block.getBlockById(block.getId())
-                        .getUnlocalizedName()));
+                        .delegate.name()));
             blockValues.put("damage", new IntTag(block.getData()));
             blockValues.put("x", new IntTag(x));
             blockValues.put("y", new IntTag(y));
