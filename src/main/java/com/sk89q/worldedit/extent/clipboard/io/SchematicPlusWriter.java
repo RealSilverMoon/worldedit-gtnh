@@ -13,8 +13,13 @@ import com.sk89q.worldedit.entity.Entity;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldedit.world.registry.BlockRegistry;
 import com.sk89q.worldedit.world.registry.BundledBlockData;
 import com.sk89q.worldedit.world.registry.WorldData;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class SchematicPlusWriter implements ClipboardWriter {
 
@@ -73,13 +78,7 @@ public class SchematicPlusWriter implements ClipboardWriter {
 
             Map<String, Tag> blockValues = new HashMap<>();
             blockValues.put(
-                "id",
-                new StringTag(
-                    Optional.ofNullable(
-                        BundledBlockData.getInstance()
-                            .findById(block.getId()))
-                        .map(var -> var.id)
-                        .orElse("minecraft:air")));
+                "id", new StringTag(Block.getBlockById(block.getId()).getUnlocalizedName()));
             blockValues.put("damage", new IntTag(block.getData()));
             blockValues.put("x", new IntTag(x));
             blockValues.put("y", new IntTag(y));

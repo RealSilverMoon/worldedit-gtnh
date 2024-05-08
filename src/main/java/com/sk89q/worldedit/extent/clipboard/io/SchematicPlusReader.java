@@ -26,6 +26,7 @@ import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldedit.world.registry.BundledBlockData;
 import com.sk89q.worldedit.world.registry.WorldData;
 import com.sk89q.worldedit.world.storage.NBTConversions;
+import net.minecraft.block.Block;
 
 public class SchematicPlusReader implements ClipboardReader {
 
@@ -195,10 +196,7 @@ public class SchematicPlusReader implements ClipboardReader {
                         .get("damage")
                         .getValue();
                     BaseBlock block = new BaseBlock(
-                        Optional.ofNullable(
-                            BundledBlockData.getInstance()
-                                .toLegacyId(id))
-                            .orElse(0),
+                            Block.getIdFromBlock(Block.getBlockFromName(id)),
                         damage);
                     if (tileEntitiesMap.containsKey(pt)) {
                         block.setNbtData(new CompoundTag(tileEntitiesMap.get(pt)));
