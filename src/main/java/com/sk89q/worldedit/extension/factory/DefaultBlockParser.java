@@ -72,7 +72,7 @@ class DefaultBlockParser extends InputParser<BaseBlock> {
         String[] blockAndExtraData = input.split("\\|");
         String[] blockLocator = blockAndExtraData[0].split(":", 3);
         String[] typeAndData = switch (blockLocator.length) {
-            case 3 -> new String[]{blockLocator[0] + ":" + blockLocator[1], blockLocator[2]};
+            case 3 -> new String[] { blockLocator[0] + ":" + blockLocator[1], blockLocator[2] };
             default -> blockLocator;
         };
         String testId = typeAndData[0];

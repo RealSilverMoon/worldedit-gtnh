@@ -17,23 +17,21 @@
 package com.sk89q.worldedit.blocks;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import com.sk89q.jnbt.CompoundTag;
-import com.sk89q.jnbt.IntTag;
 import com.sk89q.jnbt.StringTag;
 import com.sk89q.jnbt.Tag;
 import com.sk89q.worldedit.CuboidClipboard.FlipDirection;
 import com.sk89q.worldedit.forge.NBTConverter;
-import com.sk89q.worldedit.forge.TileEntityBaseBlock;
 import com.sk89q.worldedit.foundation.Block;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.world.registry.WorldData;
+
 import gregtech.api.GregTech_API;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
 /**
  * Represents a mutable "snapshot" of a block.
@@ -190,10 +188,11 @@ public class BaseBlock extends Block implements TileEntityBlock {
      */
     protected final void internalSetData(int data) {
         if (data > MAX_DATA) {
-            this.data=0;
-            NBTTagCompound nbt=new NBTTagCompound();
-            GregTech_API.createTileEntity(0).writeToNBT(nbt);
-            nbt.setInteger("mID",data);
+            this.data = 0;
+            NBTTagCompound nbt = new NBTTagCompound();
+            GregTech_API.createTileEntity(0)
+                .writeToNBT(nbt);
+            nbt.setInteger("mID", data);
             setNbtData(NBTConverter.fromNative(nbt));
             return;
         }

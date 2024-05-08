@@ -6,11 +6,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
+
+import net.minecraft.block.Block;
 
 import com.sk89q.jnbt.*;
 import com.sk89q.worldedit.BlockVector;
@@ -23,10 +24,8 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.Location;
-import com.sk89q.worldedit.world.registry.BundledBlockData;
 import com.sk89q.worldedit.world.registry.WorldData;
 import com.sk89q.worldedit.world.storage.NBTConversions;
-import net.minecraft.block.Block;
 
 public class SchematicPlusReader implements ClipboardReader {
 
@@ -195,9 +194,7 @@ public class SchematicPlusReader implements ClipboardReader {
                     int damage = (int) blockMap.get(pt)
                         .get("damage")
                         .getValue();
-                    BaseBlock block = new BaseBlock(
-                            Block.getIdFromBlock(Block.getBlockFromName(id)),
-                        damage);
+                    BaseBlock block = new BaseBlock(Block.getIdFromBlock(Block.getBlockFromName(id)), damage);
                     if (tileEntitiesMap.containsKey(pt)) {
                         block.setNbtData(new CompoundTag(tileEntitiesMap.get(pt)));
                     }
