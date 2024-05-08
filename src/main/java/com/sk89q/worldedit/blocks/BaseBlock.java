@@ -273,7 +273,7 @@ public class BaseBlock extends Block implements TileEntityBlock {
 
     /**
      * Get the type of block.
-     * 
+     *
      * @return the type
      */
     public int getType() {
@@ -282,7 +282,7 @@ public class BaseBlock extends Block implements TileEntityBlock {
 
     /**
      * Set the type of block.
-     * 
+     *
      * @param type the type to set
      */
     public void setType(int type) {
@@ -313,7 +313,7 @@ public class BaseBlock extends Block implements TileEntityBlock {
 
     /**
      * Rotate this block -90 degrees.
-     * 
+     *
      * @return new data value
      * @deprecated Use {@link BlockData#rotate90Reverse(int, int)}
      */
@@ -340,7 +340,7 @@ public class BaseBlock extends Block implements TileEntityBlock {
 
     /**
      * Flip this block.
-     * 
+     *
      * @return this block
      * @deprecated Use {@link BlockData#flip(int, int)}
      */
@@ -352,7 +352,7 @@ public class BaseBlock extends Block implements TileEntityBlock {
 
     /**
      * Flip this block.
-     * 
+     *
      * @param direction direction to flip in
      * @return this block
      * @deprecated Use {@link BlockData#flip(int, int, FlipDirection)}
@@ -378,7 +378,7 @@ public class BaseBlock extends Block implements TileEntityBlock {
 
     /**
      * Checks if the type is the same, and if data is the same if only data != -1.
-     * 
+     *
      * @param o other block
      * @return true if equal
      */
