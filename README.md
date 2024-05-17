@@ -2,3 +2,4 @@
 
 [WorldEdit](https://github.com/EngineHub/WorldEdit/tree/forge-archive/1.7.10) fork at 1.7.10 for use in a GTNH instance. Non-forge
 related code has been removed for ease of maintenance.
+This version add support for gregtech metablock. Use //schem save(load) schematicplus 
